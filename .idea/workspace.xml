@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5e741a31-a7ae-4243-8371-7b7bf8b5a4d8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/scripts/dag1/task1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/dag1/task2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/data_engineering.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_engineering.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/test_git-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dags/dag1.py" beforeDir="false" afterPath="$PROJECT_DIR$/dags/dag1.py" afterDir="false" />
-    </list>
+    <list default="true" id="5e741a31-a7ae-4243-8371-7b7bf8b5a4d8" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -55,6 +45,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "test",
+    "last_opened_file_path": "C:/Users/avoykin/Downloads/smart_v1.1/smart_v1.1",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -80,7 +71,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1718277809098</updated>
-      <workItem from="1718277810512" duration="1620000" />
+      <workItem from="1718277810512" duration="2972000" />
     </task>
     <servers />
   </component>

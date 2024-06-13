@@ -28,3 +28,12 @@ man_is_utro = BashOperator(
     bash_command='python3 /airflow/scripts/dag1/task2.py',
     dag=dag
 )
+
+end = BashOperator(
+    task_id = 'end',
+    bash_command='cd qwe',
+    dag=dag
+)
+
+man_is_sleep >> man_is_utro
+end
