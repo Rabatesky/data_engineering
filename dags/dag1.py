@@ -29,11 +29,4 @@ man_is_utro = BashOperator(
     dag=dag
 )
 
-end = BashOperator(
-    task_id = 'end',
-    bash_command='cd qwe',
-    dag=dag
-)
-
 man_is_sleep >> man_is_utro
-end
