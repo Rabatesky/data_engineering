@@ -16,7 +16,7 @@ default_args = {
     'poke_interval': 600
 }
 
-dag = DAG('test_connect_postgres', default_args=default_args, schedule_interval='* * * * *',
+dag = DAG('test_dag_some_task', default_args=default_args, schedule_interval='* * * * *',
           catchup=False, max_active_runs=1, max_active_tasks=10, tags=["idiot"])
 
 dummy = DummyOperator(
