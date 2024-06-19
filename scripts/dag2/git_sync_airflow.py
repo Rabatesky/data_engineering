@@ -3,9 +3,10 @@ import shutil
 import os
 from datetime import datetime
 
-def update_dags_and_scripts(repo_url, local_path, airflow_path):
+def update_dags_and_scripts(repo_url, local_path, airflow_path, proxy_url):
     try:
         print(f'Starting update at {datetime.now()}')
+        env = {'HTTP_PROXY': proxy_url, 'HTTPS_PROXY': proxy_url}
 
         # Проверяем, существует ли локальная папка репозитория
         if not os.path.exists(local_path):
@@ -16,7 +17,7 @@ def update_dags_and_scripts(repo_url, local_path, airflow_path):
         os.chdir(local_path)
 
         # Получаем последние изменения из репозитория
-        subprocess.check_call(['git', 'pull'])
+        subprocess.check_call(['git', 'pull'], env=env)
 
         # Перескопировать содержимое папок dags и scripts
         dags_src = os.path.join(local_path, 'dags')
@@ -38,4 +39,5 @@ if __name__ == '__main__':
     repo_url = 'https://github.com/Rabatesky/data_engineering.git' #ссылка на git
     local_path = '/git_rep/data_engineering'  # Путь к локальному репозиторию на сервере
     airflow_path = '/airflow' #папка где лежит airflow(AIRFLOW_HOME)
-    update_dags_and_scripts(repo_url, local_path, airflow_path)
+    proxy_url = "http://10.155.110.30:3128/"
+    update_dags_and_scripts(repo_url, local_path, airflow_path, proxy_url)
