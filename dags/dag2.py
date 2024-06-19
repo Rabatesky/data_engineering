@@ -24,4 +24,3 @@ start_sync = BashOperator(
 )
 
 start_sync
-

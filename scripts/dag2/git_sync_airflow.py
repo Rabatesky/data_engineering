@@ -35,7 +35,7 @@ def update_dags_and_scripts(repo_url, local_path, airflow_path):
         print(f'Error during update: {e}')
 
 if __name__ == '__main__':
-    repo_url = 'https://github.com/Rabatesky/data_engineering.git'
+    repo_url = 'https://github.com/Rabatesky/data_engineering.git' #ссылка на git
     local_path = '/git_rep/data_engineering'  # Путь к локальному репозиторию на сервере
-    airflow_path = '/airflow'
+    airflow_path = '/airflow' #папка где лежит airflow(AIRFLOW_HOME)
     update_dags_and_scripts(repo_url, local_path, airflow_path)
