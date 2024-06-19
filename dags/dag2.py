@@ -19,7 +19,7 @@ dag = DAG('sync_git', default_args=default_args, schedule_interval='* * * * *',
 
 start_sync = BashOperator(
     task_id = 'start_sync',
-    bash_command='python3 /airflow/scripts/dag2/git_sync_airflow.py.py',
+    bash_command='python3 /airflow/scripts/dag2/git_sync_airflow.py',
     dag=dag
 )
 

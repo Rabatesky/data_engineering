@@ -13,7 +13,7 @@ def update_dags_and_scripts(repo_url, local_path, airflow_path):
             subprocess.check_call(['git', 'clone', repo_url, local_path])
 
         # Переключаемся в папку репозитория
-        subprocess.check_call(['cd', local_path])
+        os.chdir(local_path)
 
         # Получаем последние изменения из репозитория
         subprocess.check_call(['git', 'pull'])
@@ -36,6 +36,6 @@ def update_dags_and_scripts(repo_url, local_path, airflow_path):
 
 if __name__ == '__main__':
     repo_url = 'https://github.com/Rabatesky/data_engineering.git'
-    local_path = '/git_rep'  # Путь к локальному репозиторию на сервере
+    local_path = '/git_rep/data_engineering'  # Путь к локальному репозиторию на сервере
     airflow_path = '/airflow'
-    update_dags_and_scripts(repo_url, local_path)
+    update_dags_and_scripts(repo_url, local_path, airflow_path)
