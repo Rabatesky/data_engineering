@@ -19,7 +19,7 @@ dag = DAG('my_first_dag', default_args=default_args, schedule_interval='10 * * *
 
 man_is_sleep = BashOperator(
     task_id = 'man_is_sleep',
-    bash_command='python3 /airflow/scripts/dag1/task1.py',
+    bash_command='python3 /airflow/scripts/dag1/git_sync_airflow.py.py',
     dag=dag
 )
 
