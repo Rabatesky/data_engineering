@@ -5,6 +5,7 @@ from datetime import datetime
 from datetime import timedelta
 from airflow import DAG
 from airflow.utils.dates import days_ago
+import logging
 
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
