@@ -21,7 +21,7 @@ default_args = {
 
 
 dag = DAG('test_xcom', default_args=default_args, schedule_interval='10 * * * *',
-          max_active_runs=1, max_active_tasks=10, tags=["idiot"])
+          max_active_runs=1, max_active_tasks=10, tags=["idiot"], catchup=False)
 
 
 def explicit_push_func(**kwargs):

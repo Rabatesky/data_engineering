@@ -5,7 +5,6 @@ from datetime import datetime
 
 def update_dags_and_scripts(repo_url, local_path, airflow_path, proxy_url):
     try:
-        print(f'Starting update at {datetime.now()}')
         env = {'HTTP_PROXY': proxy_url, 'HTTPS_PROXY': proxy_url}
 
         # Проверяем, существует ли локальная папка репозитория
@@ -31,7 +30,6 @@ def update_dags_and_scripts(repo_url, local_path, airflow_path, proxy_url):
         shutil.copytree(dags_src, dags_dest)
         shutil.copytree(scripts_src, scripts_dest)
 
-        print(f'Done updating dags and scripts at {datetime.now()}')
     except Exception as e:
         print(f'Error during update: {e}')
 
