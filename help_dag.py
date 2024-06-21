@@ -21,3 +21,4 @@ default_args = {
     'sla_miss_callback': yet_another_function,      #в случае окончания sla
     'trigger_rule': 'all_success'                   #Случаи запуска таска(all_success,all_failed,all_done,one_failed,one_success,none_failed,none_failed_or_skipped,none_skipped,dummy)
 }
+
