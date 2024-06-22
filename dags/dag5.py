@@ -5,7 +5,7 @@ import logging
 
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
-from airflow.provides.postgres.hooks.postgres import PostgresHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.operators.bash import BashOperator
 
 default_args = {
