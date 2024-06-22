@@ -13,7 +13,6 @@ default_args = {
     'retries': 1,                                   #Количество перезапусков в случае падения
     'retry_delay': timedelta(minutes=1),            #Время через которое стоит выполнить перезапуск
     'start_date': datetime(2021, 1, 1),             #Дата первого запуска, отработает столько раз сколько прошло времени с первого запуска
-    'catchup': False,                               #Если false  то будет запущен только 1 раз в момент запуска(игнор start_date)
     'sla': timedelta(hours=2),                      #Время за которое поидее даг уже должен закончить работу, если нет то придёт уведомление что таск работал дольше
     'execution_timeout': timedelta(seconds=300),    #Максимально время на таск, после этого break
     'trigger_rule': 'all_success'                   #Случаи запуска таска(all_success,all_failed,all_done,one_failed,one_success,none_failed,none_failed_or_skipped,none_skipped,dummy)
