@@ -14,7 +14,7 @@ default_args = {
     'retry_delay': timedelta(minutes=0.1)
 }
 
-dag = DAG('sync_git', default_args=default_args, schedule_interval='* * * * *',
+dag = DAG('sync_git', default_args=default_args, schedule_interval='0 * * * *',
           catchup=False, max_active_runs=1, max_active_tasks=3, tags=["idiot"])
 
 start_sync = BashOperator(
