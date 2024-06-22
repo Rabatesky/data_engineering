@@ -26,7 +26,7 @@ def get_new_table_postgres():
     pg_hook = PostgresHook('1_my_postgres_test')
     con = pg_hook.get_conn()
     data = pd.read_sql_query("Select * from california.california_housing LIMIT 10", con)
-    logging.info(data)
+    logging.info(pg_hook.get_conn)
 
 
 test_connect = PythonOperator(
