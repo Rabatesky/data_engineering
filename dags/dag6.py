@@ -9,7 +9,7 @@ import logging
 
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.operators.sql_operator import SqlOperator
+from airflow.providers.postgres.operators.sql import PostgresOperator
 
 default_args = {
     'owner': 'home_pc',                             #Владелец дага
@@ -59,14 +59,14 @@ read_data = PythonOperator(
     dag=dag
 )
 
-drop_table_task = SqlOperator(
+drop_table_task = PostgresOperator(
     task_id='drop_table_task',
     sql="Drop table california.california_housing",
     postgres_conn_id='1_my_postgres_test',
     dag=dag
 )
 
-create_table_task = SqlOperator(
+create_table_task = PostgresOperator(
     task_id='create_table_task',
     sql="CREATE TABLE california.california_housing ("
                       "MedInc float8 NULL,"
