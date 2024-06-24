@@ -8,10 +8,8 @@ import numpy as np
 from sqlalchemy import create_engine
 import logging
 
-from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.operators.bash import BashOperator
 
 default_args = {
     'owner': 'home_pc',                             #Владелец дага
@@ -38,12 +36,12 @@ def get_new_table_postgres_in():
     logging.info(con.host)
     logging.info(con.port)
     logging.info(con.schema)
-    engine = create_engine(f"postgresql+psycopg2://{con.login}:{con.password}@{con.host}:{con.port}/{con.schema}")
+    #engine = create_engine(f"postgresql+psycopg2://{con.login}:{con.password}@{con.host}:{con.port}/{con.schema}")
     logging.info('1')
-    data = pd.read_sql_query("Select * from california.california_housing", engine)
+    data = pd.read_sql_query("Select * from california.california_housing", con)
     #data = pd.read_sql_query("Select * from california.california_housing", con)
     logging.info('2')
-    data.to_sql('california_housing', engine, schema='california1', if_exists='replace')
+    data.to_sql('california_housing', con.connection, schema='california1', if_exists='replace')
     logging.info('3')
 
 
