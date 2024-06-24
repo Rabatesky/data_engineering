@@ -29,10 +29,10 @@ dag = DAG('Test_table', default_args=default_args, schedule_interval='0 0 * * *'
 
 def insert_df(df, name_table):
     columns = ', '.join([f'"{col}"' for col in df.columns])
-    values = ', '.join([f'("{val}")' for val in df.values.flatten()])
+    placeholders = ', '.join(['%s'] * len(df.columns))
     insert_query = f"""
     INSERT INTO {name_table} ({columns})
-    VALUES ({values});
+VALUES ({placeholders});
     """
     return insert_query
 
@@ -49,11 +49,9 @@ def re_data(**kwargs):
     kwargs['ti'].xcom_push(value=data, key='dataframe_reload')
 
 def load_data(**kwargs):
-    #pg_hook = PostgresHook('1_my_postgres_test')
+    pg_hook = PostgresHook('1_my_postgres_test')
     data = kwargs['ti'].xcom_pull(key='dataframe_reload')
-    #pg_hook.run(insert_df(data, 'california.california_housing'))
-    engine = create_engine('postgresql://postgres:avoy@172.25.42.73:5432/postgres')
-    data.to_sql('california_housing', engine, schema='california', if_exists='replace')
+    pg_hook.get_records(insert_df(data, 'california.california_housing'), parameters=tuple(data.values.flatten()))
 
 
 read_data = PythonOperator(
