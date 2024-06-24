@@ -48,10 +48,9 @@ def re_data(**kwargs):
     data.columns = data.columns.str.lower()
     kwargs['ti'].xcom_push(value=data, key='dataframe_reload')
 
-def load_data(**kwargs):
-    pg_hook = PostgresHook('1_my_postgres_test')
+def load_data_csv(**kwargs):
     data = kwargs['ti'].xcom_pull(key='dataframe_reload')
-    pg_hook.get_records(insert_df(data, 'california.california_housing'), parameters=tuple(data.values.flatten()))
+    data.to_csv('/dataframe.csv', index=False)
 
 
 read_data = PythonOperator(
@@ -91,11 +90,20 @@ re_data = PythonOperator(
     dag=dag
 )
 
-load_data = PythonOperator(
-    task_id='load_data',
-    python_callable=load_data,
+load_data_csv = PythonOperator(
+    task_id='load_data_csv',
+    python_callable=load_data_csv,
     provide_context=True,
     dag=dag
 )
 
-read_data >> drop_table_task >> [create_table_task, re_data] >> load_data
+csv_to_posg = PostgresOperator(
+    task_id='csv_to_posg',
+    sql="""
+        COPY california.california_housing FROM '/dataframe.csv' DELIMITER ',' CSV HEADER;
+        """,
+    postgres_conn_id='1_my_postgres_test',
+    dag=dag
+)
+
+read_data >> drop_table_task >> [create_table_task, re_data] >> load_data_csv >> csv_to_posg
