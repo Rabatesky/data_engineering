@@ -45,6 +45,7 @@ def read_data(**kwargs):
 def re_data(**kwargs):
     data = kwargs['ti'].xcom_pull(key='dataframe')
     data = data.drop(['index'], axis=1)
+    data.columns = data.columns.str.lower()
     kwargs['ti'].xcom_push(value=data, key='dataframe_reload')
 
 def load_data(**kwargs):
