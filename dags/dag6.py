@@ -27,11 +27,11 @@ default_args = {
 dag = DAG('Test_table', default_args=default_args, schedule_interval='0 0 * * *',
           max_active_runs=1, max_active_tasks=10, tags=["idiot"], catchup=False)
 
-def insert_df(df):
+def insert_df(df, name_table):
     columns = ', '.join([f'"{col}"' for col in df.columns])
     values = ', '.join([f'("{val}")' for val in df.values.flatten()])
     insert_query = f"""
-    INSERT INTO new_table ({columns})
+    INSERT INTO {name_table} ({columns})
     VALUES ({values});
     """
     return insert_query
@@ -50,7 +50,7 @@ def re_data(**kwargs):
 def load_data(**kwargs):
     pg_hook = PostgresHook('1_my_postgres_test')
     data = kwargs['ti'].xcom_pull(key='dataframe_reload')
-    pg_hook.run(insert_df(data))
+    pg_hook.run(insert_df(data, 'california.california_housing'))
 
 
 read_data = PythonOperator(
