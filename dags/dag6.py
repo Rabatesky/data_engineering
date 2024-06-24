@@ -71,15 +71,15 @@ drop_table_task = PostgresOperator(
 create_table_task = PostgresOperator(
     task_id='create_table_task',
     sql="CREATE TABLE california.california_housing ("
-                      "'MedInc' float8 NULL,"
-                      "'HouseAge' float8 NULL,"
-                      "'AveRooms' float8 NULL,"
-                      "'AveBedrms' float8 NULL,"
-                      "'Population' float8 NULL,"
-                      "'AveOccup' float8 NULL,"
-                      "'Latitude' float8 NULL,"
-                      "'Longitude' float8 NULL,"
-                      "'MedHouseVal' float8 NULL)",
+                      "MedInc float8 NULL,"
+                      "HouseAge float8 NULL,"
+                      "AveRooms float8 NULL,"
+                      "AveBedrms float8 NULL,"
+                      "Population float8 NULL,"
+                      "AveOccup float8 NULL,"
+                      "Latitude float8 NULL,"
+                      "Longitude float8 NULL,"
+                      "MedHouseVal float8 NULL)",
     postgres_conn_id='1_my_postgres_test',
     dag=dag
 )
