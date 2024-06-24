@@ -41,7 +41,7 @@ def get_new_table_postgres_in():
     data = pd.read_sql_query("Select * from california.california_housing", con)
     #data = pd.read_sql_query("Select * from california.california_housing", con)
     logging.info('2')
-    data.to_sql('california_housing', con1.connection, schema='california1', if_exists='replace')
+    data.to_sql('california_housing', engine, schema='california1', if_exists='replace')
     logging.info('3')
 
 
