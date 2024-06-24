@@ -27,14 +27,6 @@ default_args = {
 dag = DAG('Test_table', default_args=default_args, schedule_interval='0 0 * * *',
           max_active_runs=1, max_active_tasks=10, tags=["idiot"], catchup=False)
 
-def insert_df(df, name_table):
-    columns = ', '.join([f'"{col}"' for col in df.columns])
-    placeholders = ', '.join(['%s'] * len(df.columns))
-    insert_query = f"""
-    INSERT INTO {name_table} ({columns})
-VALUES ({placeholders});
-    """
-    return insert_query
 
 def read_data(**kwargs):
     pg_hook = PostgresHook('1_my_postgres_test')
@@ -47,63 +39,3 @@ def re_data(**kwargs):
     data = data.drop(['index'], axis=1)
     data.columns = data.columns.str.lower()
     kwargs['ti'].xcom_push(value=data, key='dataframe_reload')
-
-def load_data_csv(**kwargs):
-    data = kwargs['ti'].xcom_pull(key='dataframe_reload')
-    data.to_csv('/dataframe.csv', index=False)
-
-
-read_data = PythonOperator(
-    task_id='read_data',
-    python_callable=read_data,
-    provide_context=True,
-    dag=dag
-)
-
-drop_table_task = PostgresOperator(
-    task_id='drop_table_task',
-    sql="Drop table california.california_housing",
-    postgres_conn_id='1_my_postgres_test',
-    dag=dag
-)
-
-create_table_task = PostgresOperator(
-    task_id='create_table_task',
-    sql="CREATE TABLE california.california_housing ("
-                      "MedInc float8 NULL,"
-                      "HouseAge float8 NULL,"
-                      "AveRooms float8 NULL,"
-                      "AveBedrms float8 NULL,"
-                      "Population float8 NULL,"
-                      "AveOccup float8 NULL,"
-                      "Latitude float8 NULL,"
-                      "Longitude float8 NULL,"
-                      "MedHouseVal float8 NULL)",
-    postgres_conn_id='1_my_postgres_test',
-    dag=dag
-)
-
-re_data = PythonOperator(
-    task_id='re_data',
-    python_callable=re_data,
-    provide_context=True,
-    dag=dag
-)
-
-load_data_csv = PythonOperator(
-    task_id='load_data_csv',
-    python_callable=load_data_csv,
-    provide_context=True,
-    dag=dag
-)
-
-csv_to_posg = PostgresOperator(
-    task_id='csv_to_posg',
-    sql="""
-        COPY california.california_housing FROM '/dataframe.csv' DELIMITER ',' CSV HEADER;
-        """,
-    postgres_conn_id='1_my_postgres_test',
-    dag=dag
-)
-
-read_data >> drop_table_task >> [create_table_task, re_data] >> load_data_csv >> csv_to_posg
