@@ -27,9 +27,9 @@ dag = DAG('test_postgres_in', default_args=default_args, schedule_interval='0 0 
           max_active_runs=1, max_active_tasks=10, tags=["idiot"], catchup=False)
 
 def get_new_table_postgres_in():
-    #pg_hook = PostgresHook('1_my_postgres_test')
-    con = PostgresHook.get_connection('1_my_postgres_test')
-    #con = pg_hook.get_conn()
+    pg_hook = PostgresHook('1_my_postgres_test')
+    #con = PostgresHook.get_connection('1_my_postgres_test')
+    con = pg_hook.get_conn()
     #logging.info('0')
     logging.info(con.login)
     logging.info(con.password)
@@ -38,7 +38,7 @@ def get_new_table_postgres_in():
     logging.info(con.schema)
     engine = create_engine(f"postgresql+psycopg2://{con.login}:{con.password}@{con.host}:{con.port}/{con.schema}")
     logging.info('1')
-    data = pd.read_sql_query("Select * from california.california_housing", con.connection)
+    data = pd.read_sql_query("Select * from california.california_housing", con)
     #data = pd.read_sql_query("Select * from california.california_housing", con)
     logging.info('2')
     data.to_sql('california_housing', engine, schema='california1', if_exists='replace')
