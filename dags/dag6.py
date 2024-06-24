@@ -3,6 +3,9 @@ from datetime import timedelta
 from airflow import DAG
 
 import pandas as pd
+import numpy as np
+from sqlalchemy import create_engine
+from sklearn.datasets import fetch_california_housing
 import logging
 
 from airflow.operators.dummy_operator import DummyOperator
@@ -22,19 +25,24 @@ default_args = {
 }
 
 
-dag = DAG('test_postgres', default_args=default_args, schedule_interval='0 0 * * *',
+dag = DAG('test_postgres_in', default_args=default_args, schedule_interval='0 0 * * *',
           max_active_runs=1, max_active_tasks=10, tags=["idiot"], catchup=False)
 
-def get_new_table_postgres():
+def get_new_table_postgres_in():
     pg_hook = PostgresHook('1_my_postgres_test')
     con = pg_hook.get_conn()
-    data = pd.read_sql_query("Select * from california.california_housing LIMIT 10", con)
-    logging.info(pg_hook.get_conn)
+
+    data = fetch_california_housing()
+    dataset = np.concatenate([data['data'], data['target'].reshape([data['target'].shape[0], 1])], axis=1)
+    dataset = pd.DataFrame(dataset, columns=data['feature_names'] + data['target_names'])
+
+    engine = create_engine(con)
+    dataset.to_sql('california_housing', engine, 'california1', 'replace')
 
 
-test_connect = PythonOperator(
-    task_id='test_connect',
-    python_callable=get_new_table_postgres,
+test_connect_in = PythonOperator(
+    task_id='test_connect_in',
+    python_callable=get_new_table_postgres_in,
     provide_context=True,
     dag=dag
 )
