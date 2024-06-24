@@ -29,8 +29,10 @@ dag = DAG('test_postgres_in', default_args=default_args, schedule_interval='0 0 
 
 def get_new_table_postgres_in():
     pg_hook = PostgresHook('1_my_postgres_test')
-    con = pg_hook.get_conn()
+    con = pg_hook.get_connection()
     logging.info('0')
+    logging.info(con.host)
+    logging.info(con.port)
     engine = create_engine(f"postgresql://{con.host}:{con.port}/{con.schema}")
     logging.info('1')
     data = pd.read_sql_query("Select * from california.california_housing", con)
