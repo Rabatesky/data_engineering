@@ -38,7 +38,7 @@ def get_new_table_postgres_in():
     logging.info(con.schema)
     engine = create_engine(f"postgresql+psycopg2://{con.login}:{con.password}@{con.host}:{con.port}/{con.schema}")
     logging.info('1')
-    data = pd.read_sql_query("Select * from california.california_housing", engine)
+    data = pd.read_sql_query("Select * from california.california_housing", con.connection)
     #data = pd.read_sql_query("Select * from california.california_housing", con)
     logging.info('2')
     data.to_sql('california_housing', engine, schema='california1', if_exists='replace')
