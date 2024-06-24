@@ -53,7 +53,7 @@ def load_data(**kwargs):
     data = kwargs['ti'].xcom_pull(key='dataframe_reload')
     #pg_hook.run(insert_df(data, 'california.california_housing'))
     engine = create_engine('postgresql://postgres:avoy@172.25.42.73:5432/postgres')
-    pd.read_sql_query("SELECT * FROM california.california_housing", engine)
+    data.to_sql('california_housing', engine, schema='california', if_exists='replace')
 
 
 read_data = PythonOperator(
