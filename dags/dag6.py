@@ -5,7 +5,6 @@ from airflow import DAG
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
-from sklearn.datasets import fetch_california_housing
 import logging
 
 from airflow.operators.dummy_operator import DummyOperator
@@ -32,12 +31,9 @@ def get_new_table_postgres_in():
     pg_hook = PostgresHook('1_my_postgres_test')
     con = pg_hook.get_conn()
 
-    data = fetch_california_housing()
-    dataset = np.concatenate([data['data'], data['target'].reshape([data['target'].shape[0], 1])], axis=1)
-    dataset = pd.DataFrame(dataset, columns=data['feature_names'] + data['target_names'])
-
+    data = pd.read_sql_query("Select * from california.california_housing", con)
     engine = create_engine(con)
-    dataset.to_sql('california_housing', engine, 'california1', 'replace')
+    data.to_sql('california_housing', engine, 'california1', 'replace')
 
 
 test_connect_in = PythonOperator(
