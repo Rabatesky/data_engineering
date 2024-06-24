@@ -1,7 +1,7 @@
 from datetime import datetime
 from datetime import timedelta
 from airflow import DAG
-
+from sqlalchemy import create_engine
 
 import pyarrow as pa
 import pandas as pd
@@ -49,9 +49,11 @@ def re_data(**kwargs):
     kwargs['ti'].xcom_push(value=data, key='dataframe_reload')
 
 def load_data(**kwargs):
-    pg_hook = PostgresHook('1_my_postgres_test')
+    #pg_hook = PostgresHook('1_my_postgres_test')
     data = kwargs['ti'].xcom_pull(key='dataframe_reload')
-    pg_hook.run(insert_df(data, 'california.california_housing'))
+    #pg_hook.run(insert_df(data, 'california.california_housing'))
+    engine = create_engine('postgresql://postgres:avoy@172.25.42.73:5432/postgres')
+    pd.read_sql_query("SELECT * FROM california.california_housing", engine)
 
 
 read_data = PythonOperator(
