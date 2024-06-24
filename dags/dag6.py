@@ -5,11 +5,11 @@ from airflow import DAG
 
 import pandas as pd
 import numpy as np
-from sqlalchemy import create_engine
 import logging
 
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.operators.sql_operator import SqlOperator
 
 default_args = {
     'owner': 'home_pc',                             #Владелец дага
@@ -23,31 +23,77 @@ default_args = {
 }
 
 
-dag = DAG('test_postgres_in', default_args=default_args, schedule_interval='0 0 * * *',
+dag = DAG('Test_table', default_args=default_args, schedule_interval='0 0 * * *',
           max_active_runs=1, max_active_tasks=10, tags=["idiot"], catchup=False)
 
-def get_new_table_postgres_in():
+def insert_df(df):
+    columns = ', '.join([f'"{col}"' for col in df.columns])
+    values = ', '.join([f'("{val}")' for val in df.values.flatten()])
+    insert_query = f"""
+    INSERT INTO new_table ({columns})
+    VALUES ({values});
+    """
+    return insert_query
+
+def read_data(**kwargs):
     pg_hook = PostgresHook('1_my_postgres_test')
-    con1 = PostgresHook.get_connection('1_my_postgres_test')
     con = pg_hook.get_conn()
-    #logging.info('0')
-    logging.info(con1.login)
-    logging.info(con1.password)
-    logging.info(con1.host)
-    logging.info(con1.port)
-    logging.info(con1.schema)
-    engine = create_engine("postgresql://postgres:avoy@172.25.42.73:5432/postgres")
-    logging.info('1')
     data = pd.read_sql_query("Select * from california.california_housing", con)
-    #data = pd.read_sql_query("Select * from california.california_housing", con)
-    logging.info('2')
-    data.to_sql('california_housing', engine, schema='california1', if_exists='replace')
-    logging.info('3')
+    kwargs['ti'].xcom_push(value=data, key='dataframe')
+
+def re_data(**kwargs):
+    data = kwargs['ti'].xcom_pull(key='dataframe')
+    data = data.dtop(['index'], axis=1)
+    kwargs['ti'].xcom_push(value=data, key='dataframe_reload')
+
+def load_data(**kwargs):
+    pg_hook = PostgresHook('1_my_postgres_test')
+    data = kwargs['ti'].xcom_pull(key='dataframe_reload')
+    pg_hook.run(insert_df(data))
 
 
-test_connect_in = PythonOperator(
-    task_id='test_connect_in',
-    python_callable=get_new_table_postgres_in,
+read_data = PythonOperator(
+    task_id='read_data',
+    python_callable=read_data,
     provide_context=True,
     dag=dag
 )
+
+drop_table_task = SqlOperator(
+    task_id='drop_table_task',
+    sql="Drop table california.california_housing",
+    postgres_conn_id='1_my_postgres_test',
+    dag=dag
+)
+
+create_table_task = SqlOperator(
+    task_id='create_table_task',
+    sql="CREATE TABLE california.california_housing ("
+                      "MedInc float8 NULL,"
+                      "HouseAge float8 NULL,"
+                      "AveRooms float8 NULL,"
+                      "AveBedrms float8 NULL,"
+                      "Population float8 NULL,"
+                      "AveOccup float8 NULL,"
+                      "Latitude float8 NULL,"
+                      "Longitude float8 NULL,"
+                      "MedHouseVal float8 NULL)",
+    postgres_conn_id='1_my_postgres_test',
+    dag=dag
+)
+
+re_data = PythonOperator(
+    task_id='re_data',
+    python_callable=re_data,
+    provide_context=True,
+    dag=dag
+)
+
+load_data = PythonOperator(
+    task_id='load_data',
+    python_callable=load_data,
+    provide_context=True,
+    dag=dag
+)
+
+read_data >> drop_table_task >> [create_table_task, re_data] >> load_data
