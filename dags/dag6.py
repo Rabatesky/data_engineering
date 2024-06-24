@@ -36,7 +36,7 @@ def get_new_table_postgres_in():
     logging.info(con1.host)
     logging.info(con1.port)
     logging.info(con1.schema)
-    engine = create_engine(f"postgresql+psycopg2://{con1.login}:{con1.password}@{con1.host}:{con1.port}/{con1.schema}")
+    engine = create_engine("postgresql://postgres:avoy@172.25.42.73:5432/postgres")
     logging.info('1')
     data = pd.read_sql_query("Select * from california.california_housing", con)
     #data = pd.read_sql_query("Select * from california.california_housing", con)
