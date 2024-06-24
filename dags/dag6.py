@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timedelta
 from airflow import DAG
 
+
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
@@ -30,12 +31,13 @@ dag = DAG('test_postgres_in', default_args=default_args, schedule_interval='0 0 
 def get_new_table_postgres_in():
     pg_hook = PostgresHook('1_my_postgres_test')
     con = pg_hook.get_connection('1_my_postgres_test')
+    con1 = pg_hook.get_conn()
     logging.info('0')
     logging.info(con.host)
     logging.info(con.port)
     engine = create_engine(f"postgresql://{con.host}:{con.port}/{con.schema}")
     logging.info('1')
-    data = pd.read_sql_query("Select * from california.california_housing", con)
+    data = pd.read_sql_query("Select * from california.california_housing", con1)
     logging.info('2')
     data.to_sql('california_housing', engine, 'california1', 'replace')
     logging.info('3')
