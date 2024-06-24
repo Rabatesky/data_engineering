@@ -15,7 +15,7 @@ from airflow.operators.bash import BashOperator
 default_args = {
     'owner': 'home_pc',                             #Владелец дага
     'retries': 1,                                   #Количество перезапусков в случае падения
-    'retry_delay': timedelta(minutes=1),            #Время через которое стоит выполнить перезапуск
+    'retry_delay': timedelta(minutes=0.1),            #Время через которое стоит выполнить перезапуск
     'start_date': datetime(2024, 6, 22),             #Дата первого запуска, отработает столько раз сколько прошло времени с первого запуска
     'sla': timedelta(hours=2),                      #Время за которое поидее даг уже должен закончить работу, если нет то придёт уведомление что таск работал дольше
     'email': ['demon-310@mail.ru'],  # Нуже для отправки писем сигнализирующих о падении или перезапуске дага
@@ -32,7 +32,7 @@ def get_new_table_postgres_in():
     con = pg_hook.get_conn()
 
     data = pd.read_sql_query("Select * from california.california_housing", con)
-    engine = create_engine(con)
+    engine = create_engine(f"postgresql://{con.login}:{con.password}@{con.host}:{con.port}/{con.schema}")
     data.to_sql('california_housing', engine, 'california1', 'replace')
 
 
