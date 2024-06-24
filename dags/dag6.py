@@ -29,7 +29,7 @@ dag = DAG('test_postgres_in', default_args=default_args, schedule_interval='0 0 
 
 def get_new_table_postgres_in():
     pg_hook = PostgresHook('1_my_postgres_test')
-    con = pg_hook.get_connection()
+    con = pg_hook.get_connection('1_my_postgres_test')
     logging.info('0')
     logging.info(con.host)
     logging.info(con.port)
